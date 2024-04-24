@@ -1,55 +1,49 @@
 import fs from "fs"
-import { Wallet, parseEther, keccak256, Provider } from "ethers"
-import { generateRSAKeyPair, decryptRSA, sign } from "./crypto"
+import { Wallet, keccak256, Provider } from "ethers"
+import { generateRSAKeyPair, decryptRSA, sign } from "../libs/crypto"
+import { getContract } from "./contract"
 
-let pks = process.env.SIGNING_KEYS ? process.env.SIGNING_KEYS.split(",") : []
+export type User = Awaited<ReturnType<typeof setupAccount>>
 
-export type User = Awaited<ReturnType<typeof setupAccounts>>[number]
+export async function setupAccount(provider: Provider) {
+  const getWallet = () => {
+    if (!process.env.SIGNING_KEY) {
+      const wallet = Wallet.createRandom(provider)
 
-export async function setupAccounts(provider: Provider) {
-  if (pks.length == 0) {
-    const key1 = Wallet.createRandom(provider)
-    const key2 = Wallet.createRandom(provider)
-    pks = [key1.privateKey, key2.privateKey]
+      setEnvValue("SIGNING_KEY", `${wallet.privateKey}`)
 
-    setEnvValue("SIGNING_KEYS", `${key1.privateKey},${key2.privateKey}`)
+      throw new Error(`Created new random account ${wallet.publicKey}. Please use faucet to fund it.`)
+    }
 
-    throw new Error(`Created new random account ${key1.publicKey}. Please use faucet to fund it.`)
+    return new Wallet(process.env.SIGNING_KEY, provider)
   }
 
-  const wallets = pks.map((pk) => new Wallet(pk, provider))
-  if ((await provider.getBalance(wallets[0].address)) === BigInt("0")) {
-    throw new Error(`Please use faucet to fund account ${wallets[0].address}`)
+  const wallet = getWallet()
+  if ((await provider.getBalance(wallet.address)) === BigInt("0")) {
+    throw new Error(`Please use faucet to fund account ${wallet.address}`)
   }
 
-  let userKeys = process.env.USER_KEYS ? process.env.USER_KEYS.split(",") : []
-
-  if (userKeys.length !== wallets.length) {
-    userKeys = await Promise.all(wallets.map(async (account) => await onboard(account)))
-    setEnvValue("USER_KEYS", userKeys.join(","))
-
-    await wallets[0].sendTransaction({ to: wallets[1].address, value: parseEther("0.1") })
+  const createUserKey = async (wallet: Wallet) => {
+    const userKey = await onboard(wallet)
+    setEnvValue("USER_KEY", userKey)
+    return userKey
   }
 
-  return wallets.map((wallet, i) => ({ wallet, userKey: userKeys[i] }))
+  const userKey = process.env.USER_KEY ? process.env.USER_KEY : await createUserKey(wallet)
+  return { wallet, userKey }
 }
 
-// async function deploy(owner: Wallet) {
-//   const factory = await ethers.ContractFactory("GetUserKey", owner)
-//   const contract = await factory.connect(owner).deploy({ gasLimit: 12000000 })
-//   return contract.waitForDeployment()
-// }
-
 async function onboard(user: Wallet) {
-  // const contract = await deploy(user)
-  // const { publicKey, privateKey } = generateRSAKeyPair()
+  const contract = getContract("AccountOnBoard", user)
+  const { publicKey, privateKey } = generateRSAKeyPair()
 
-  // const signedEK = sign(keccak256(publicKey), user.privateKey)
-  // await (await contract.connect(user).getUserKey(publicKey, signedEK, { gasLimit: 12000000 })).wait()
-  // const encryptedKey = await contract.connect(user).getSavedUserKey()
-  // const buf = Buffer.from(encryptedKey.substring(2), "hex")
-  // return decryptRSA(privateKey, buf).toString("hex")
-  return ""
+  const signedEK = sign(keccak256(publicKey), user.privateKey)
+  await (await contract.connect(user).getFunction("OnboardAccount")(publicKey, signedEK, { gasLimit: 12000000 })).wait()
+  const event = await contract.queryFilter(contract.filters.AccountOnboarded(user.address))
+  // @ts-ignore
+  const encryptedKey = event[0].args.userKey
+  const buf = Buffer.from(encryptedKey.substring(2), "hex")
+  return decryptRSA(privateKey, buf).toString("hex")
 }
 
 function setEnvValue(key: string, value: string) {

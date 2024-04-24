@@ -1,6 +1,6 @@
 import crypto from "crypto"
 import { solidityPackedKeccak256, SigningKey, getBytes } from "ethers"
-import type { User } from "./onboard"
+import type { User } from "../util/onboard"
 
 const block_size = 16 // AES block size in bytes
 const hexBase = 16
