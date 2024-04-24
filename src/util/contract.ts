@@ -24,5 +24,5 @@ export function loadDeployments() {
 }
 
 export function getContract(name: DeployedContractName, contractRunner: ContractRunner) {
-  return deployedContracts[name].connect(contractRunner)
+  return deployedContracts[name].connect(contractRunner) as Contract
 }

@@ -12,7 +12,7 @@ async function main() {
   const owner = await setupAccount(provider)
   if (process.argv[2] === "erc20") {
     console.log("Running erc20 example...")
-    await erc20Example(owner)
+    await erc20Example(provider, owner)
   }
 }
 
