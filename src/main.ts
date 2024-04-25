@@ -16,4 +16,4 @@ async function main() {
   }
 }
 
-main().finally(() => console.log("done"))
+main()

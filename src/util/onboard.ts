@@ -11,8 +11,9 @@ export async function setupAccount(provider: Provider) {
       const wallet = Wallet.createRandom(provider)
 
       setEnvValue("SIGNING_KEY", `${wallet.privateKey}`)
+      console.log("************* Created new account ", wallet.address, " and saved into .env file *************")
 
-      throw new Error(`Created new random account ${wallet.publicKey}. Please use faucet to fund it.`)
+      throw new Error(`Please use faucet to fund account ${wallet.address}`)
     }
 
     return new Wallet(process.env.SIGNING_KEY, provider)
@@ -24,7 +25,10 @@ export async function setupAccount(provider: Provider) {
   }
 
   const createUserKey = async (wallet: Wallet) => {
+    console.log("************* Onboarding user ", wallet.address, " *************")
     const userKey = await onboard(wallet)
+    console.log("************* Onboarded! created user key and saved into .env file *************")
+
     setEnvValue("USER_KEY", userKey)
     return userKey
   }

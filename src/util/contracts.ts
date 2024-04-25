@@ -10,14 +10,14 @@ const deployedContracts: Record<string, Contract> = {}
 
 export function loadDeployments() {
   const files = fs.readdirSync(deploymentsDir)
-  console.log(`Found ${files.length} deployments -> ${files.join(", ")}`)
+  // console.log(`Found ${files.length} deployments -> ${files.join(", ")}`)
 
   files.map((f) => {
     const { address, abi } = JSON.parse(fs.readFileSync(path.join(deploymentsDir, f), "utf-8"))
     deployedContracts[f.replace(".json", "")] = new Contract(address, Interface.from(JSON.stringify(abi)))
   })
 
-  console.log("Loaded all deployments", Object.keys(deployedContracts))
+  // console.log("Loaded all deployments", Object.keys(deployedContracts))
 }
 
 export function getContract<C extends keyof DeployedContract>(name: C, contractRunner: ContractRunner) {
