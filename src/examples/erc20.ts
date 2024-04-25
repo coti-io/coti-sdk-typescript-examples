@@ -1,19 +1,19 @@
 import { Contract, Provider, Wallet } from "ethers"
 import type { User } from "../util/onboard"
-import { getContract } from "../util/contract"
+import { getContract } from "../util/contracts"
 import { assert } from "../util/assert"
 import { decryptValue } from "../libs/crypto"
 
 const gasLimit = 12000000
 
-async function assertBalance(token: Contract, amount: number, user: User) {
+async function assertBalance(token: ReturnType<typeof getTokenContract>, amount: number, user: User) {
   const ctBalance = await token.balanceOf()
   let balance = decryptValue(ctBalance, user.userKey)
   assert(balance === amount)
 }
 
-async function assertAllowance(contract: Contract, amount: number, owner: User, spenderAddress: string) {
-  const ctAllowance = await contract.allowance(owner.wallet.address, spenderAddress)
+async function assertAllowance(token: ReturnType<typeof getTokenContract>, amount: number, owner: User, spenderAddress: string) {
+  const ctAllowance = await token.allowance(owner.wallet.address, spenderAddress)
   let allowance = decryptValue(ctAllowance, owner.userKey)
   assert(allowance === amount)
 }
@@ -31,7 +31,7 @@ export async function erc20Example(provider: Provider, user: User) {
 }
 
 async function clearTransfer(
-  token: Contract,
+  token: ReturnType<typeof getTokenContract>,
   initlalBalance: number,
   owner: User,
   otherAccount: Wallet,

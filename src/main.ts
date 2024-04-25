@@ -4,7 +4,7 @@ dotenv.config()
 import { setupAccount } from "./util/onboard"
 import { getProvider } from "./util/provider"
 import { erc20Example } from "./examples/erc20"
-import { loadDeployments } from "./util/contract"
+import { loadDeployments } from "./util/contracts"
 
 async function main() {
   loadDeployments()

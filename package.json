@@ -4,6 +4,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "postinstall":"cd confidentiality-contracts && yarn && yarn build",
     "onboard": "ts-node src/main.ts",
     "erc20": "ts-node src/main.ts erc20"
   },

@@ -1,7 +1,7 @@
 import fs from "fs"
 import { Wallet, keccak256, Provider } from "ethers"
 import { generateRSAKeyPair, decryptRSA, sign } from "../libs/crypto"
-import { getContract } from "./contract"
+import { getContract } from "./contracts"
 
 export type User = Awaited<ReturnType<typeof setupAccount>>
 
@@ -34,11 +34,11 @@ export async function setupAccount(provider: Provider) {
 }
 
 async function onboard(user: Wallet) {
-  const contract = getContract("AccountOnBoard", user)
+  const contract = getContract("AccountOnboard", user)
   const { publicKey, privateKey } = generateRSAKeyPair()
 
   const signedEK = sign(keccak256(publicKey), user.privateKey)
-  await (await contract.connect(user).getFunction("OnboardAccount")(publicKey, signedEK, { gasLimit: 12000000 })).wait()
+  await (await contract.getFunction("OnboardAccount")(publicKey, signedEK, { gasLimit: 12000000 })).wait()
   const event = await contract.queryFilter(contract.filters.AccountOnboarded(user.address))
   // @ts-ignore
   const encryptedKey = event[0].args.userKey
