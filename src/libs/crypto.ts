@@ -98,9 +98,9 @@ export function decryptRSA(privateKey: Buffer, ciphertext: Buffer) {
   )
 }
 
-export function decryptValue(myCTBalance: bigint, userKey: string) {
+export function decryptValue(ctAmount: bigint, userKey: string) {
   // Convert CT to bytes
-  let ctString = myCTBalance.toString(hexBase)
+  let ctString = ctAmount.toString(hexBase)
   let ctArray = Buffer.from(ctString, "hex")
   while (ctArray.length < 32) {
     // When the first bits are 0, bigint bit size is less than 32 and need to re-add the bits
@@ -145,10 +145,6 @@ export async function prepareIT(plaintext: bigint, sender: User, contractAddress
   return { ctInt, signature }
 }
 
-// async function testRecover(signature: string, hash: Uint8Array) {
-//   // const contract = await (await (await hre.ethers.getContractFactory("RecoverMessage")).deploy()).waitForDeployment()
-//   const contract = await hre.ethers.getContractAt("RecoverMessage", "0xA1913406A9f0D10fd44f02dA54e6fcdfffCF7E46")
-//   // console.log(`contract address ${await contract.getAddress()}`)
-
-//   console.log(await contract.recoverECDSA(hash, signature))
-// }
+export function createRandomUserKey() {
+  return crypto.randomBytes(block_size).toString("hex")
+}

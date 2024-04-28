@@ -1,9 +1,9 @@
 import fs from "fs"
 import path from "path"
 import { Contract, Interface, ContractRunner } from "ethers"
-import type { ERC20Example, AccountOnboard } from "../../confidentiality-contracts/typechain-types"
+import type { ERC20Example, AccountOnboard, DataOnChain } from "../../confidentiality-contracts/typechain-types"
 
-type DeployedContract = { ERC20Example: ERC20Example; AccountOnboard: AccountOnboard }
+type DeployedContract = { ERC20Example: ERC20Example; AccountOnboard: AccountOnboard; DataOnChain: DataOnChain }
 
 const deploymentsDir = "./deployments"
 const deployedContracts: Record<string, Contract> = {}

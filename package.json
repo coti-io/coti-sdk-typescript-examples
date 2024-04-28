@@ -4,9 +4,10 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "postinstall":"cd confidentiality-contracts && yarn && yarn build",
+    "postinstall": "cd confidentiality-contracts && yarn && yarn build",
     "onboard": "ts-node src/main.ts",
-    "erc20": "ts-node src/main.ts erc20"
+    "erc20": "ts-node src/main.ts erc20",
+    "dataOnChain": "ts-node src/main.ts dataOnChain"
   },
   "devDependencies": {
     "dotenv": "^16.4.5",

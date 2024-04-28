@@ -1,0 +1,88 @@
+{
+  "address": "0xc4f8c74D1741eb0Ab8F42F5123F15c14000aD3CD",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "_from",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "ctUint64",
+          "name": "ctUserSomeEncryptedValue",
+          "type": "uint256"
+        }
+      ],
+      "name": "UserEncryptedValue",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "getNetworkSomeEncryptedValueOf",
+      "outputs": [
+        {
+          "internalType": "ctUint64",
+          "name": "ctSomeEncryptedValue",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getUserSomeEncryptedValueOf",
+      "outputs": [
+        {
+          "internalType": "ctUint64",
+          "name": "ctSomeEncryptedValue",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint64",
+          "name": "_value",
+          "type": "uint64"
+        }
+      ],
+      "name": "setSomeEncryptedValueOf",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "setUserSomeEncryptedValueOf",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "someValueOf",
+      "outputs": [
+        {
+          "internalType": "uint64",
+          "name": "value",
+          "type": "uint64"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]
+}
