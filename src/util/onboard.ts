@@ -42,10 +42,14 @@ async function onboard(user: Wallet) {
   const { publicKey, privateKey } = generateRSAKeyPair()
 
   const signedEK = sign(keccak256(publicKey), user.privateKey)
-  await (await contract.getFunction("OnboardAccount")(publicKey, signedEK, { gasLimit: 12000000 })).wait()
-  const event = await contract.queryFilter(contract.filters.AccountOnboarded(user.address))
-  // @ts-ignore
-  const encryptedKey = event[0].args.userKey
+  const receipt = await (await contract.OnboardAccount(publicKey, signedEK, { gasLimit: 12000000 })).wait()
+  if (!receipt || !receipt.logs || !receipt.logs[0]) {
+    throw new Error("failed to onboard, receipt or receipt.logs or receipt.logs[0] is undefined")
+  }
+  const log = receipt.logs[0]
+  const eventFragment = contract.interface.getEvent("AccountOnboarded")
+  const decodedEvent = contract.interface.decodeEventLog(eventFragment, log.data, log.topics)
+  const encryptedKey = decodedEvent.userKey
   const buf = Buffer.from(encryptedKey.substring(2), "hex")
   return decryptRSA(privateKey, buf).toString("hex")
 }

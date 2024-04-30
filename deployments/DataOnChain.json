@@ -1,5 +1,5 @@
 {
-  "address": "0xc4f8c74D1741eb0Ab8F42F5123F15c14000aD3CD",
+  "address": "0x6Ebfa1ea4298411923D968b4fbF2951Fe5C9A1F5",
   "abi": [
     {
       "inputs": [],
@@ -27,7 +27,7 @@
     },
     {
       "inputs": [],
-      "name": "getNetworkSomeEncryptedValueOf",
+      "name": "getNetworkSomeEncryptedValue",
       "outputs": [
         {
           "internalType": "ctUint64",
@@ -40,7 +40,46 @@
     },
     {
       "inputs": [],
-      "name": "getUserSomeEncryptedValueOf",
+      "name": "getNetworkSomeEncryptedValueEncryptedInput",
+      "outputs": [
+        {
+          "internalType": "ctUint64",
+          "name": "ctSomeEncryptedValue",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getSomeValue",
+      "outputs": [
+        {
+          "internalType": "uint64",
+          "name": "value",
+          "type": "uint64"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getUserSomeEncryptedValue",
+      "outputs": [
+        {
+          "internalType": "ctUint64",
+          "name": "ctSomeEncryptedValue",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getUserSomeEncryptedValueEncryptedInput",
       "outputs": [
         {
           "internalType": "ctUint64",
@@ -59,28 +98,40 @@
           "type": "uint64"
         }
       ],
-      "name": "setSomeEncryptedValueOf",
+      "name": "setSomeEncryptedValue",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [],
-      "name": "setUserSomeEncryptedValueOf",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "someValueOf",
-      "outputs": [
+      "inputs": [
         {
-          "internalType": "uint64",
-          "name": "value",
-          "type": "uint64"
+          "internalType": "ctUint64",
+          "name": "_itCT",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "_itSignature",
+          "type": "bytes"
         }
       ],
+      "name": "setSomeEncryptedValueEncryptedInput",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "setUserSomeEncryptedValue",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "setUserSomeEncryptedValueEncryptedInput",
+      "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     }
