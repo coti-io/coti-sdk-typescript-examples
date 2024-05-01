@@ -1,5 +1,5 @@
 {
-  "address": "0x6Ebfa1ea4298411923D968b4fbF2951Fe5C9A1F5",
+  "address": "0x8f80c08D3aF260240b0c5fD32cA6d69A0147Bd91",
   "abi": [
     {
       "inputs": [],
@@ -24,6 +24,13 @@
       ],
       "name": "UserEncryptedValue",
       "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "add",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
       "inputs": [],
@@ -61,7 +68,20 @@
           "type": "uint64"
         }
       ],
-      "stateMutability": "nonpayable",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getUserArithmeticResult",
+      "outputs": [
+        {
+          "internalType": "ctUint64",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -88,6 +108,19 @@
         }
       ],
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "ctUint64",
+          "name": "networkEncrypted",
+          "type": "uint256"
+        }
+      ],
+      "name": "setNetworkSomeEncryptedValue",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {

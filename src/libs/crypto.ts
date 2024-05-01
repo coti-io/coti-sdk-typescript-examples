@@ -1,6 +1,6 @@
 import crypto from "crypto"
 import { solidityPackedKeccak256, SigningKey, getBytes } from "ethers"
-import type { User } from "../util/onboard"
+import { ConfidentialAccount } from "../util/onboard"
 
 const block_size = 16 // AES block size in bytes
 const hexBase = 16
@@ -123,7 +123,12 @@ export function sign(message: string, privateKey: string) {
   return Buffer.concat([getBytes(sig.r), getBytes(sig.s), getBytes(`0x0${sig.v - 27}`)])
 }
 
-export async function prepareIT(plaintext: bigint, sender: User, contractAddress: string, functionSelector: string) {
+export async function prepareIT(
+  plaintext: bigint,
+  sender: ConfidentialAccount,
+  contractAddress: string,
+  functionSelector: string
+) {
   // Convert the plaintext to bytes
   const plaintextBytes = Buffer.alloc(8) // Allocate a buffer of size 8 bytes
   plaintextBytes.writeBigUInt64BE(plaintext) // Write the uint64 value to the buffer as little-endian

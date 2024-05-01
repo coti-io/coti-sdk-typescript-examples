@@ -1,9 +1,19 @@
 import fs from "fs"
-import { Wallet, keccak256, Provider } from "ethers"
-import { generateRSAKeyPair, decryptRSA, sign } from "../libs/crypto"
+import { Wallet, HDNodeWallet, keccak256, Provider, BaseWallet } from "ethers"
+import { generateRSAKeyPair, decryptRSA, sign, decryptValue, prepareIT } from "../libs/crypto"
 import { getContract } from "./contracts"
 
-export type User = Awaited<ReturnType<typeof setupAccount>>
+export class ConfidentialAccount {
+  constructor(readonly wallet: BaseWallet, readonly userKey: string) {}
+
+  public decryptValue(amount: bigint) {
+    return decryptValue(amount, this.userKey)
+  }
+
+  public encryptValue(plaintext: bigint | number, contractAddress: string, functionSelector: string) {
+    return prepareIT(BigInt(plaintext), this, contractAddress, functionSelector)
+  }
+}
 
 export async function setupAccount(provider: Provider) {
   const getWallet = () => {
@@ -34,10 +44,10 @@ export async function setupAccount(provider: Provider) {
   }
 
   const userKey = process.env.USER_KEY ? process.env.USER_KEY : await createUserKey(wallet)
-  return { wallet, userKey }
+  return new ConfidentialAccount(wallet, userKey)
 }
 
-async function onboard(user: Wallet) {
+async function onboard(user: Wallet | HDNodeWallet) {
   const contract = getContract("AccountOnboard", user)
   const { publicKey, privateKey } = generateRSAKeyPair()
 

@@ -1,12 +1,12 @@
 import { Contract, Provider, Wallet } from "ethers"
-import type { User } from "../util/onboard"
+import type { ConfidentialAccount } from "../util/onboard"
 import { getContract } from "../util/contracts"
 import { assert } from "../util/assert"
 import { decryptValue, prepareIT } from "../libs/crypto"
 
 const gasLimit = 12000000
 
-async function assertBalance(token: ReturnType<typeof getTokenContract>, amount: number, user: User) {
+async function assertBalance(token: ReturnType<typeof getTokenContract>, amount: number, user: ConfidentialAccount) {
   const ctBalance = await token.balanceOf()
   let balance = decryptValue(ctBalance, user.userKey)
   assert(balance === amount, `Expected balance to be ${amount}, but got ${balance}`)
@@ -16,7 +16,7 @@ async function assertBalance(token: ReturnType<typeof getTokenContract>, amount:
 async function assertAllowance(
   token: ReturnType<typeof getTokenContract>,
   amount: number,
-  owner: User,
+  owner: ConfidentialAccount,
   spenderAddress: string
 ) {
   const ctAllowance = await token.allowance(owner.wallet.address, spenderAddress)
@@ -24,11 +24,11 @@ async function assertAllowance(
   assert(allowance === amount, `Expected allowance to be ${amount}, but got ${allowance}`)
 }
 
-function getTokenContract(user: User) {
+function getTokenContract(user: ConfidentialAccount) {
   return getContract("ERC20Example", user.wallet)
 }
 
-export async function erc20Example(provider: Provider, user: User) {
+export async function erc20Example(provider: Provider, user: ConfidentialAccount) {
   const token = getTokenContract(user)
   const otherWallet = new Wallet(Wallet.createRandom(provider).privateKey)
 
@@ -54,7 +54,7 @@ export async function erc20Example(provider: Provider, user: User) {
 async function clearTransfer(
   token: ReturnType<typeof getTokenContract>,
   initlalBalance: number,
-  owner: User,
+  owner: ConfidentialAccount,
   alice: Wallet,
   transferAmount: number
 ) {
@@ -72,7 +72,7 @@ async function clearTransfer(
 async function confidentialTransfer(
   token: ReturnType<typeof getTokenContract>,
   initlalBalance: number,
-  owner: User,
+  owner: ConfidentialAccount,
   alice: Wallet,
   transferAmount: number
 ) {
@@ -89,7 +89,7 @@ async function confidentialTransfer(
 async function clearTransferFromWithoutAllowance(
   token: ReturnType<typeof getTokenContract>,
   initlalBalance: number,
-  owner: User,
+  owner: ConfidentialAccount,
   alice: Wallet,
   transferAmount: number
 ) {
@@ -109,7 +109,7 @@ async function clearTransferFromWithoutAllowance(
 
 async function clearApprove(
   token: ReturnType<typeof getTokenContract>,
-  owner: User,
+  owner: ConfidentialAccount,
   alice: Wallet,
   approveAmount: number
 ) {
@@ -120,7 +120,7 @@ async function clearApprove(
 
 async function confidentialApprove(
   token: ReturnType<typeof getTokenContract>,
-  owner: User,
+  owner: ConfidentialAccount,
   alice: Wallet,
   approveAmount: number
 ) {
@@ -139,7 +139,7 @@ async function confidentialApprove(
 async function clearTransferFrom(
   token: ReturnType<typeof getTokenContract>,
   initlalBalance: number,
-  owner: User,
+  owner: ConfidentialAccount,
   alice: Wallet,
   transferAmount: number
 ) {
@@ -154,7 +154,7 @@ async function clearTransferFrom(
 async function confidentialTransferFrom(
   token: ReturnType<typeof getTokenContract>,
   initlalBalance: number,
-  owner: User,
+  owner: ConfidentialAccount,
   alice: Wallet,
   transferAmount: number
 ) {
