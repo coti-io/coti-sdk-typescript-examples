@@ -1,8 +1,7 @@
 import { Contract, Provider, Wallet } from "ethers"
-import type { ConfidentialAccount } from "../util/onboard"
+import { type ConfidentialAccount, decryptValue, prepareIT } from "@coti-io/coti-sdk-core"
 import { getContract } from "../util/contracts"
 import { assert } from "../util/assert"
-import { decryptValue, prepareIT } from "../libs/crypto"
 
 const gasLimit = 12000000
 

@@ -1,7 +1,6 @@
 import { Provider } from "ethers"
-import type { ConfidentialAccount } from "../util/onboard"
+import { type ConfidentialAccount, decryptValue, createRandomUserKey } from "@coti-io/coti-sdk-core"
 import { getContract } from "../util/contracts"
-import { decryptValue, createRandomUserKey } from "../libs/crypto"
 import { assert } from "../util/assert"
 
 const gasLimit = 12000000
@@ -18,17 +17,17 @@ export async function dataOnChainExample(provider: Provider, user: ConfidentialA
 
   const networkEncryptedValue = await contract.getNetworkSomeEncryptedValue()
   console.log(`Network encrypted value: ${networkEncryptedValue}`)
-  console.log(`Network decripted value: ${decryptValue(networkEncryptedValue, user.userKey)}`)
+  console.log(`Network decrypted value: ${user.decryptValue(networkEncryptedValue)}`)
 
   await (await contract.setUserSomeEncryptedValue({ gasLimit })).wait()
   console.log(`setting user encrypted value: ${value}`)
 
   const userEncryptedValue = await contract.getUserSomeEncryptedValue()
   console.log(`User encrypted value: ${userEncryptedValue}`)
-  console.log(`User decripted value: ${decryptValue(userEncryptedValue, user.userKey)}`)
+  console.log(`User decrypted value: ${user.decryptValue(userEncryptedValue)}`)
 
   const otherUserKey = createRandomUserKey()
-  console.log(`Other User decripted value: ${decryptValue(userEncryptedValue, otherUserKey)}`)
+  console.log(`Other User decrypted value: ${decryptValue(userEncryptedValue, otherUserKey)}`)
 
   const value2 = 555
   await setValueWithEncryptedInput(contract, user, value2)
@@ -42,7 +41,7 @@ export async function dataOnChainExample(provider: Provider, user: ConfidentialA
     decryptedResult === expectedResult,
     `Expected addition result to be ${expectedResult}, but got ${decryptedResult}`
   )
-  console.log(`User decripted addition result: ${decryptedResult}`)
+  console.log(`User decrypted addition result: ${decryptedResult}`)
 }
 
 async function setValueWithEncryptedInput(
@@ -61,5 +60,5 @@ async function setValueWithEncryptedInput(
   const userEncryptedValue = await contract.getUserSomeEncryptedValueEncryptedInput()
   const decryptedValue = user.decryptValue(userEncryptedValue)
   assert(decryptedValue === value, `Expected value to be ${value}, but got ${decryptedValue}`)
-  console.log(`User decripted using user encrypted value: ${decryptValue(userEncryptedValue, user.userKey)}`)
+  console.log(`User decrypted using user encrypted value: ${decryptedValue}`)
 }

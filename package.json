@@ -10,6 +10,7 @@
     "dataOnChain": "ts-node src/main.ts dataOnChain"
   },
   "devDependencies": {
+    "@coti-io/coti-sdk-core": "https://github.com/coti-io/coti-sdk-core.git",
     "dotenv": "^16.4.5",
     "ethers": "^6.12.0",
     "ts-node": "^10.9.2",

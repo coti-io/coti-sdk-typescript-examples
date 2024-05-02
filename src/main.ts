@@ -1,15 +1,15 @@
 import dotenv from "dotenv"
 dotenv.config()
 
+import { getDefaultProvider } from "@coti-io/coti-sdk-core"
 import { setupAccount } from "./util/onboard"
-import { getProvider } from "./util/provider"
 import { erc20Example } from "./examples/erc20"
 import { loadDeployments } from "./util/contracts"
 import { dataOnChainExample } from "./examples/dataOnChain"
 
 async function main() {
   loadDeployments()
-  const provider = getProvider()
+  const provider = getDefaultProvider()
   const owner = await setupAccount(provider)
   if (process.argv[2] === "erc20") {
     console.log("Running erc20 example...")
