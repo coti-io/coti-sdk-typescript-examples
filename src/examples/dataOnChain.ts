@@ -1,5 +1,5 @@
 import { Provider } from "ethers"
-import { type ConfidentialAccount, decryptValue, createRandomUserKey } from "@coti-io/coti-sdk-core"
+import { type ConfidentialAccount, decryptValue, createRandomUserKey } from "@coti-io/coti-sdk-typescript"
 import { getContract } from "../util/contracts"
 import { assert } from "../util/assert"
 

@@ -1,7 +1,7 @@
 import dotenv from "dotenv"
 dotenv.config()
 
-import { getDefaultProvider } from "@coti-io/coti-sdk-core"
+import { getDefaultProvider } from "@coti-io/coti-sdk-typescript"
 import { setupAccount } from "./util/onboard"
 import { erc20Example } from "./examples/erc20"
 import { loadDeployments } from "./util/contracts"

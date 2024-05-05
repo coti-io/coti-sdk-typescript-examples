@@ -1,5 +1,5 @@
 import fs from "fs"
-import { ConfidentialAccount } from "@coti-io/coti-sdk-core"
+import { ConfidentialAccount } from "@coti-io/coti-sdk-typescript"
 import { Wallet, Provider } from "ethers"
 
 export async function setupAccount(provider: Provider) {
