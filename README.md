@@ -8,7 +8,7 @@ The contracts are of Solidity and can be compiled and deployed using popular dev
 
 #### Important Links:
 
-[Docs](https://docs.coti.io) | [Devnet Explorer](https://explorer-devnet.coti.io) | [Faucet](https://faucet.coti.io)
+[Docs](https://docs.coti.io) | [Devnet Explorer](https://explorer-devnet.coti.io) | [Discord](https://discord.gg/cuCykh8P4m) | [Faucet](https://faucet.coti.io)
 
 Interact with the network using any of the following:
 
@@ -77,7 +77,6 @@ The following examples are available for **execution**:
 
 #### Pending enhancements
 
-- Publishing SDK via npmjs
 - Extending examples such as confidential ERC20 minting, confidential NFT (deployment and actions) and more.
 
 #### To report issues, please create a [github issue](https://github.com/coti-io/coti-sdk-typescript/issues)
