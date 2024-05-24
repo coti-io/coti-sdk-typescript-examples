@@ -58,21 +58,74 @@ The following examples are available for **execution**:
 
 ## Usage
 
-1. Install dependencies
+### ERC20
 
-   ```
-   yarn
-   ```
+The following process will help you run the [**`erc20.ts`**](https://github.com/coti-io/coti-sdk-typescript-examples/blob/main/src/examples/erc20.ts) example from the [**COTI Typescript SDK Examples**](https://github.com/coti-io/coti-sdk-typescript-examples) project. The script includes functions for transferring tokens, approving allowances, and handling confidential transactions. The script uses various utilities from the SDK to manage confidential accounts, decrypt values, and ensure correct balances and allowances during transactions. It will also:
 
-2. Run ERC20 test
-
-   ```
-   yarn erc20
-   ```
-
+* Create a EOA (Externally Owned Account)
+* Validate minimum balance
 
 > [!NOTE]  
-> Runnning tests will create an account automatically. The account will be saved to the `.env` file and will need to be funded. Use the COTI faucet to request devnet/testnet funds.
+> Ensure your environment meets all the pre-requisites. Visit the [pre-requisites section of the readme](https://github.com/coti-io/coti-sdk-typescript-examples/blob/main/README.md).
+
+1.  Clone the Typescript examples repo along with its submodules into your desired location
+
+    ```bash
+    git clone --recurse-submodules git@github.com:coti-io/coti-sdk-typescript-examples.git
+    ```
+
+
+2.  Change directory to the newly create one
+
+    ```bash
+    cd coti-sdk-typescript-examples
+    ```
+
+
+3.  Install dependencies
+
+    ```bash
+    yarn
+    ```
+
+
+4.  Run `erc20.ts` script
+
+    ```bash
+    yarn erc20
+    ```
+
+    \
+    Running this test will automatically create an account and a key/value pair with name: `SIGNING_KEY` (visible in the .env file). The script will output something like this:\
+
+
+    ```bash
+    yarn run v1.22.22
+    $ ts-node src/main.ts erc20
+    ************* Created new account  0x87c13D0f5903a68bE8288E52b23A220CeC6b1aB6  and saved into .env file *************
+    /Users/user/projects/coti-sdk-typescript-examples/src/util/onboard.ts:13
+          throw new Error(`Please use faucet to fund account ${wallet.address}`)
+                ^
+    Error: Please use faucet to fund account 0x87c13D0f5903a68bE8288E52b23A220CeC6b1aB6
+    ```
+
+    \
+    It is normal to receive the exception `Error: Please use faucet to fund account` on the first run. This will be resolved once the account is funded. \
+
+5. Head to the faucet at [**https://faucet.coti.io**](https://faucet.coti.io) to get devnet funds. \
+   Send the following message to the BOT using your newly created account, visible in the fourth line of the response `Created new account  0x87c13D0f5903a68bE8288E52b23A220CeC6b1aB6 [...]`\
+   \
+   `devnet <account address>`\
+   \
+   The bot will reply with the message:\
+   \
+   `<username> faucet transferred 5 COTIv2 (devnet)` \
+   &#x20;
+6.  Run `erc20.ts` script once more
+
+    ```bash
+    yarn erc20
+    ```
 
 
 #### Pending enhancements
