@@ -110,7 +110,7 @@ The following process will help you run the [**`erc20.ts`**](https://github.com/
     ```
 
     \
-    It is normal to receive the exception `Error: Please use faucet to fund account` on the first run. This will be resolved once the account is funded. \
+    It is normal to receive the exception `Error: Please use faucet to fund account` on the first run. This will be resolved once the account is funded.  
 
 5. Head to the faucet at [**https://faucet.coti.io**](https://faucet.coti.io) to get devnet funds. \
    Send the following message to the BOT using your newly created account, visible in the fourth line of the response `Created new account  0x87c13D0f5903a68bE8288E52b23A220CeC6b1aB6 [...]`\
