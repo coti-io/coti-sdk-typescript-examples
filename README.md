@@ -61,7 +61,7 @@ The following examples are available for **execution**:
 1.  Clone the Typescript examples repo along with its submodules into your desired location
 
     ```bash
-    git clone --recurse-submodules git@github.com:coti-io/coti-sdk-typescript-examples.git
+    git clone --recurse-submodules https://github.com/coti-io/coti-sdk-typescript-examples.git
     ```
 
 
