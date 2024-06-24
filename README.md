@@ -71,7 +71,7 @@ The following process will help you run the [**`erc20.ts`**](https://github.com/
 1.  Clone the Typescript examples repo along with its submodules into your desired location
 
     ```bash
-    git clone --recurse-submodules git@github.com:coti-io/coti-sdk-typescript-examples.git
+    git clone --recurse-submodules https://github.com/coti-io/coti-sdk-typescript-examples.git
     ```
 
 
