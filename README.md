@@ -58,16 +58,6 @@ The following examples are available for **execution**:
 
 ## Usage
 
-### ERC20
-
-The following process will help you run the [**`erc20.ts`**](https://github.com/coti-io/coti-sdk-typescript-examples/blob/main/src/examples/erc20.ts) example from the [**COTI Typescript SDK Examples**](https://github.com/coti-io/coti-sdk-typescript-examples) project. The script includes functions for transferring tokens, approving allowances, and handling confidential transactions. The script uses various utilities from the SDK to manage confidential accounts, decrypt values, and ensure correct balances and allowances during transactions. It will also:
-
-* Create a EOA (Externally Owned Account)
-* Validate minimum balance
-
-> [!NOTE]  
-> Ensure your environment meets all the pre-requisites. Visit the [pre-requisites section of the readme](https://github.com/coti-io/coti-sdk-typescript-examples/blob/main/README.md).
-
 1.  Clone the Typescript examples repo along with its submodules into your desired location
 
     ```bash
@@ -89,7 +79,17 @@ The following process will help you run the [**`erc20.ts`**](https://github.com/
     ```
 
 
-4.  Run `erc20.ts` script
+> [!NOTE]  
+> Ensure your environment meets all the pre-requisites. Visit the [pre-requisites section of the readme](https://github.com/coti-io/coti-sdk-typescript-examples/blob/main/README.md).
+
+### ERC20
+
+The following process will help you run the [**`erc20.ts`**](https://github.com/coti-io/coti-sdk-typescript-examples/blob/main/src/examples/erc20.ts) example from the [**COTI Typescript SDK Examples**](https://github.com/coti-io/coti-sdk-typescript-examples) project. The script includes functions for transferring tokens, approving allowances, and handling confidential transactions. The script uses various utilities from the SDK to manage confidential accounts, decrypt values, and ensure correct balances and allowances during transactions. It will also:
+
+* Create a EOA (Externally Owned Account)
+* Validate minimum balance
+
+1.  Run `erc20.ts` script
 
     ```bash
     yarn erc20
@@ -112,7 +112,7 @@ The following process will help you run the [**`erc20.ts`**](https://github.com/
     \
     It is normal to receive the exception `Error: Please use faucet to fund account` on the first run. This will be resolved once the account is funded.  
 
-5. Head to the faucet at [**https://faucet.coti.io**](https://faucet.coti.io) to get devnet funds. \
+2. Head to the faucet at [**https://faucet.coti.io**](https://faucet.coti.io) to get devnet funds. \
    Send the following message to the BOT using your newly created account, visible in the fourth line of the response `Created new account  0x87c13D0f5903a68bE8288E52b23A220CeC6b1aB6 [...]`\
    \
    `devnet <account address>`\
@@ -121,10 +121,20 @@ The following process will help you run the [**`erc20.ts`**](https://github.com/
    \
    `<username> faucet transferred 5 COTIv2 (devnet)` \
    &#x20;
-6.  Run `erc20.ts` script once more
+3.  Run `erc20.ts` script once more
 
     ```bash
     yarn erc20
+    ```
+
+### Data On Chain
+
+The following process will help you run the [**`dataOnChain.ts`**](https://github.com/coti-io/coti-sdk-typescript-examples/blob/main/src/examples/dataOnChain.ts) example from the [**COTI Typescript SDK Examples**](https://github.com/coti-io/coti-sdk-typescript-examples) project. The script includes functions for storing values on-chain that are encrypted using using either your user or the network key, and then reading these encrypted values and attempting to decrypt them using either your key or another users key.
+
+1.  Run `dataOnChain.ts` script
+
+    ```bash
+    yarn dataOnChain
     ```
 
 
