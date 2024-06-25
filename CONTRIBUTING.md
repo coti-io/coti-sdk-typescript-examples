@@ -34,25 +34,31 @@ If you have ideas for new features or improvements, feel free to suggest them by
 
 We welcome code contributions! To get started, follow these steps:
 
-1. **Fork the repository**: Click the "Fork" button at the top right of the repository page to create your own copy of the project.
+1. **Fork the repository**: Click the **"Fork"** button at the top right of the repository page to create your own copy of the project.
+
 2. **Clone your fork**: 
-   \`\`\`sh
+   ```sh
    git clone https://github.com/your-username/coti-sdk-typescript-examples.git
    cd coti-sdk-typescript-examples
-   \`\`\`
+   ```
+
 3. **Create a branch**: 
-   \`\`\`sh
+   ```sh
    git checkout -b feature/my-new-feature
-   \`\`\`
+   ```
+
 4. **Make your changes**: Develop your feature or bug fix.
+
 5. **Commit your changes**: 
-   \`\`\`sh
-   git commit -am 'Add some feature'
-   \`\`\`
+   ```sh
+   git commit -m 'Add some feature'
+   ```
+
 6. **Push to your fork**: 
-   \`\`\`sh
+   ```sh
    git push origin feature/my-new-feature
-   \`\`\`
+   ```
+
 7. **Create a pull request**: Go to the original repository and open a pull request.
 
 ## Development Guidelines
@@ -60,17 +66,22 @@ We welcome code contributions! To get started, follow these steps:
 ### Development Workflow
 
 1. Ensure that you have the latest version of the main branch:
-   \`\`\`sh
+   ```sh
    git checkout main
    git pull origin main
-   \`\`\`
+   ```
+
 2. Create a new branch for your work:
-   \`\`\`sh
+   ```sh
    git checkout -b feature/your-feature-name
-   \`\`\`
+   ```
+
 3. Make your changes and test thoroughly.
+
 4. Commit your changes with a clear and descriptive message.
+
 5. Push your branch to your fork.
+
 6. Create a pull request against the main branch of the original repository.
 
 ### Coding Standards
