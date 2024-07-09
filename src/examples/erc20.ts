@@ -1,5 +1,5 @@
 import { Contract, Provider, Wallet } from "ethers"
-import { type ConfidentialAccount, decryptValue, prepareIT } from "@coti-io/coti-sdk-typescript"
+import { type ConfidentialAccount, decryptUint, prepareUintIT } from "@coti-io/coti-sdk-typescript"
 import { getContract } from "../util/contracts"
 import { assert } from "../util/assert"
 
@@ -7,7 +7,7 @@ const gasLimit = 12000000
 
 async function assertBalance(token: ReturnType<typeof getTokenContract>, amount: number, user: ConfidentialAccount) {
   const ctBalance = await token.balanceOf()
-  let balance = decryptValue(ctBalance, user.userKey)
+  let balance = decryptUint(ctBalance, user.userKey)
   assert(balance === amount, `Expected balance to be ${amount}, but got ${balance}`)
   return balance
 }
@@ -19,7 +19,7 @@ async function assertAllowance(
   spenderAddress: string
 ) {
   const ctAllowance = await token.allowance(owner.wallet.address, spenderAddress)
-  let allowance = decryptValue(ctAllowance, owner.userKey)
+  let allowance = decryptUint(ctAllowance, owner.userKey)
   assert(allowance === amount, `Expected allowance to be ${amount}, but got ${allowance}`)
 }
 
@@ -33,7 +33,7 @@ export async function erc20Example(provider: Provider, user: ConfidentialAccount
 
   const transferAmount = 5
 
-  let balance = decryptValue(await token.balanceOf(), user.userKey)
+  let balance = decryptUint(await token.balanceOf(), user.userKey)
   if (balance === 0) {
     await (await token.setBalance(100000000, { gasLimit })).wait()
     balance = await assertBalance(token, 100000000, user)
@@ -79,7 +79,7 @@ async function confidentialTransfer(
 
   const func = token["transfer(address,uint256,bytes,bool)"]
   const selector = func.fragment.selector
-  const { ctInt, signature } = await prepareIT(BigInt(transferAmount), owner, await token.getAddress(), selector)
+  const { ctInt, signature } = await prepareUintIT(BigInt(transferAmount), owner, await token.getAddress(), selector)
 
   await (await func(alice.address, ctInt, signature, false, { gasLimit })).wait()
   return await assertBalance(token, initlalBalance - transferAmount, owner)
@@ -129,7 +129,7 @@ async function confidentialApprove(
 
   const func = token["approve(address,uint256,bytes)"]
   const selector = func.fragment.selector
-  const { ctInt, signature } = await prepareIT(BigInt(approveAmount), owner, await token.getAddress(), selector)
+  const { ctInt, signature } = await prepareUintIT(BigInt(approveAmount), owner, await token.getAddress(), selector)
   await (await func(alice.address, ctInt, signature, { gasLimit })).wait()
 
   await assertAllowance(token, approveAmount, owner, alice.address)
@@ -161,7 +161,7 @@ async function confidentialTransferFrom(
 
   const func = token["transferFrom(address,address,uint256,bytes,bool)"]
   const selector = func.fragment.selector
-  let { ctInt, signature } = await prepareIT(BigInt(transferAmount), owner, await token.getAddress(), selector)
+  let { ctInt, signature } = await prepareUintIT(BigInt(transferAmount), owner, await token.getAddress(), selector)
   await (await func(owner.wallet.address, alice.address, ctInt, signature, false, { gasLimit })).wait()
 
   return await assertBalance(token, initlalBalance - transferAmount, owner)

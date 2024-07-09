@@ -1,5 +1,5 @@
 import { Provider } from "ethers"
-import { type ConfidentialAccount, decryptValue, createRandomUserKey } from "@coti-io/coti-sdk-typescript"
+import { type ConfidentialAccount, decryptUint, createRandomUserKey } from "@coti-io/coti-sdk-typescript"
 import { getContract } from "../util/contracts"
 import { assert } from "../util/assert"
 
@@ -27,7 +27,7 @@ export async function dataOnChainExample(provider: Provider, user: ConfidentialA
   console.log(`User decrypted value: ${user.decryptValue(userEncryptedValue)}`)
 
   const otherUserKey = createRandomUserKey()
-  console.log(`Other User decrypted value: ${decryptValue(userEncryptedValue, otherUserKey)}`)
+  console.log(`Other User decrypted value: ${decryptUint(userEncryptedValue, otherUserKey)}`)
 
   const value2 = 555
   await setValueWithEncryptedInput(contract, user, value2)
