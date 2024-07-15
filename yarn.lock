@@ -7,9 +7,9 @@
   resolved "https://registry.yarnpkg.com/@adraffy/ens-normalize/-/ens-normalize-1.10.1.tgz#63430d04bd8c5e74f8d7d049338f1cd9d4f02069"
   integrity sha512-96Z2IP3mYmF1Xg2cDm8f1gWGf/HUVedQ3FMifV4kG/PQ4yEP51xDtRAEfhVNt5f/uzpNkZHwWQuUcu6D6K+Ekw==
 
-"@coti-io/coti-sdk-typescript@https://github.com/coti-io/coti-sdk-typescript.git#11a38cf":
-  version "0.0.1"
-  resolved "https://github.com/coti-io/coti-sdk-typescript.git#11a38cf1cdf94ce3f39a76d788749a50117c1833"
+"@coti-io/coti-sdk-typescript@https://github.com/coti-io/coti-sdk-typescript.git#c038d2492770a5aeea33daa497455856e3785aee":
+  version "0.5.0"
+  resolved "https://github.com/coti-io/coti-sdk-typescript.git#c038d2492770a5aeea33daa497455856e3785aee"
 
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
@@ -110,7 +110,7 @@ dotenv@^16.4.5:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.4.5.tgz#cdd3b3b604cb327e286b4762e13502f717cb099f"
   integrity sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==
 
-ethers@^6.12.0:
+ethers@^6.12.1:
   version "6.13.1"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-6.13.1.tgz#2b9f9c7455cde9d38b30fe6589972eb083652961"
   integrity sha512-hdJ2HOxg/xx97Lm9HdCWk949BfYqYWpyw4//78SiwOLgASyfrNszfMUNB2joKjvGUdwhHfaiMMFFwacVVoLR9A==
