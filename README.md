@@ -46,6 +46,9 @@ The following contracts are available in each of the packages:
 
 # COTI v2 Typescript SDK Examples
 
+> [!NOTE]
+> Please refer to the latest [tags](https://github.com/coti-io/coti-sdk-typescript-examples/tags) to find the most stable version to use.
+
 Examples that described above resides in [coti-sdk-typescript/src/examples], the solidity contracts are in the [confidentiality-contracts](https://github.com/coti-io/confidentiality-contracts) repo that is imported as a git submodule.
 
 The following examples are available for **execution**:
