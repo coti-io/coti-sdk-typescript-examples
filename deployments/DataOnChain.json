@@ -1,10 +1,29 @@
 {
-  "address": "0x1795135237fb954Cab67fF7Fde744790546b8E03",
+  "address": "0xe97cdea07d53f22d479d1e380bfcb819b1ebabca",
   "abi": [
     {
       "inputs": [],
       "stateMutability": "nonpayable",
       "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "_from",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "ctUint64[]",
+          "name": "ctUserSomeEncryptedStringValue",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "UserEncryptedStringValue",
+      "type": "event"
     },
     {
       "anonymous": false,
@@ -86,6 +105,19 @@
     },
     {
       "inputs": [],
+      "name": "getUserSomeEncryptedStringEncryptedInput",
+      "outputs": [
+        {
+          "internalType": "ctUint64[]",
+          "name": "ctSomeEncryptedValue",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
       "name": "getUserSomeEncryptedValue",
       "outputs": [
         {
@@ -126,6 +158,24 @@
     {
       "inputs": [
         {
+          "internalType": "ctUint64[]",
+          "name": "_itInputString",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "bytes[]",
+          "name": "_itSignature",
+          "type": "bytes[]"
+        }
+      ],
+      "name": "setSomeEncryptedStringEncryptedInput",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint64",
           "name": "_value",
           "type": "uint64"
@@ -150,6 +200,13 @@
         }
       ],
       "name": "setSomeEncryptedValueEncryptedInput",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "setUserSomeEncryptedStringEncryptedInput",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
