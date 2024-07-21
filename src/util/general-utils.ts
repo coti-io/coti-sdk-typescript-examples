@@ -1,8 +1,10 @@
-import {ContractTransactionReceipt, Provider, Wallet} from "ethers";
+import {Provider, Wallet} from "ethers";
 import fs from "fs";
+import {getEoa} from "@coti-io/coti-sdk-typescript";
 
-export function getWallet(provider: Provider) {
-    if (!process.env.SIGNING_KEY) {
+export async function getWallet(provider: Provider) {
+    const signingKey = process.env.SIGNING_KEY
+    if (!signingKey) {
         const wallet = Wallet.createRandom(provider)
 
         setEnvValue("SIGNING_KEY", `${wallet.privateKey}`)
@@ -10,8 +12,9 @@ export function getWallet(provider: Provider) {
 
         throw new Error(`Please use faucet to fund account ${wallet.address}`)
     }
-
-    return new Wallet(process.env.SIGNING_KEY, provider)
+    const eoa = await getEoa(signingKey)
+    console.log(`Eoa Created from provided key is: ${eoa}`)
+    return new Wallet(signingKey, provider)
 }
 
 export function setEnvValue(key: string, value: string) {

@@ -4,7 +4,9 @@ import {
     type ConfidentialAccount,
     decryptString,
     decryptUint,
-    generateAesKey
+    generateAesKey,
+    loadAesKey,
+    writeAesKey
 } from "@coti-io/coti-sdk-typescript"
 import {getContract} from "../util/contracts"
 import {assert} from "../util/assert"
@@ -33,8 +35,24 @@ export async function dataOnChainExample(provider: Provider, user: ConfidentialA
     console.log(`User encrypted value: ${userEncryptedValue}`)
     console.log(`User decrypted value: ${user.decryptValue(userEncryptedValue)}`)
 
-    const otherUserKey = generateAesKey()
-    console.log(`Other User decrypted value: ${decryptUint(userEncryptedValue, otherUserKey)}`)
+    const otherKeyFilePath = process.env.OTHER_KEY_FILE_PATH
+    let otherUserKey: String;
+
+    if (otherKeyFilePath) {
+        try {
+            otherUserKey = loadAesKey(otherKeyFilePath).toString('hex')
+            if (otherUserKey.length == 0) {
+                otherUserKey = generateAndWriteAesKey()
+            }
+        } catch (e) {
+            console.log("Error load user key from file: " + otherKeyFilePath)
+            otherUserKey = generateAndWriteAesKey()
+        }
+    } else {
+        otherUserKey = generateAndWriteAesKey();
+    }
+
+    console.log(`Other User decrypted value: ${decryptUint(userEncryptedValue, otherUserKey.toString())}`)
 
     const value2 = BigInt(555)
     await setValueWithEncryptedInput(contract, user, value2)
@@ -96,4 +114,11 @@ async function setValueWithEncryptedInput(
     const decryptedValue = user.decryptValue(userEncryptedValue)
     assert(decryptedValue === value, `Expected value to be ${value}, but got ${decryptedValue}`)
     console.log(`User decrypted using user encrypted value: ${decryptedValue}`)
+}
+
+
+function generateAndWriteAesKey() {
+    const otherUserKey = generateAesKey()
+    writeAesKey("./aesKey", Buffer.from(otherUserKey, "hex"))
+    return otherUserKey
 }

@@ -3,7 +3,7 @@ import {getNativeBalance, transferNative} from "@coti-io/coti-sdk-typescript";
 import {getWallet} from "../util/general-utils";
 
 export async function nativeTransfer(provider: Provider) {
-    const wallet = getWallet(provider)
+    const wallet = await getWallet(provider)
     const otherWallet = new Wallet(Wallet.createRandom(provider).privateKey)
     const transferAmount = BigInt(1000000000000000000)
     const gasUnit = 21000
