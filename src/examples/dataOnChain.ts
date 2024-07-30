@@ -24,14 +24,14 @@ export async function dataOnChainExample(provider: Provider, user: ConfidentialA
 
     const networkEncryptedValue = await contract.getNetworkSomeEncryptedValue()
     console.log(`Network encrypted value: ${networkEncryptedValue}`)
-    console.log(`Network decrypted value: ${user.decryptValue(networkEncryptedValue)}`)
+    console.log(`Network decrypted value: ${user.decryptUint(networkEncryptedValue)}`)
 
     await (await contract.setUserSomeEncryptedValue({gasLimit})).wait()
     console.log(`setting user encrypted value: ${value}`)
 
     const userEncryptedValue = await contract.getUserSomeEncryptedValue()
     console.log(`User encrypted value: ${userEncryptedValue}`)
-    console.log(`User decrypted value: ${user.decryptValue(userEncryptedValue)}`)
+    console.log(`User decrypted value: ${user.decryptUint(userEncryptedValue)}`)
 
     const otherUserKey = generateAesKey()
     console.log(`Other User decrypted value: ${decryptUint(userEncryptedValue, otherUserKey)}`)
@@ -42,7 +42,7 @@ export async function dataOnChainExample(provider: Provider, user: ConfidentialA
     await (await contract.add({gasLimit})).wait()
 
     const encryptedResult = await contract.getUserArithmeticResult()
-    const decryptedResult = user.decryptValue(encryptedResult)
+    const decryptedResult = user.decryptUint(encryptedResult)
     const expectedResult = value + value2
     assert(
         decryptedResult === expectedResult,
@@ -86,14 +86,14 @@ async function setValueWithEncryptedInput(
     const {
         ctInt,
         signature
-    } = await user.encryptValue(value.valueOf(), await contract.getAddress(), func.fragment.selector)
+    } = user.encryptUint(value.valueOf(), await contract.getAddress(), func.fragment.selector)
 
     await (await func(ctInt, signature, {gasLimit})).wait()
 
     await (await contract.setUserSomeEncryptedValueEncryptedInput({gasLimit})).wait()
 
     const userEncryptedValue = await contract.getUserSomeEncryptedValueEncryptedInput()
-    const decryptedValue = user.decryptValue(userEncryptedValue)
+    const decryptedValue = user.decryptUint(userEncryptedValue)
     assert(decryptedValue === value, `Expected value to be ${value}, but got ${decryptedValue}`)
     console.log(`User decrypted using user encrypted value: ${decryptedValue}`)
 }

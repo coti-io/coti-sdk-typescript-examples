@@ -1,5 +1,8 @@
 # COTI V2 Confidentiality Preserving L2 | SDKs and Examples
 
+> [!NOTE]
+> Please refer to the latest [tags](https://github.com/coti-io/coti-sdk-typescript-examples/tags) to find the most stable version to use.
+
 All repositories specified below contain smart contracts that implement confidentiality features using the COTI V2 protocol.
 The contracts provide examples for various use cases, such as Non-Fungible Tokens (NFTs), ERC20 tokens, Auction, and Identity management.
 
