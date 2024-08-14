@@ -1,5 +1,5 @@
 {
-  "address": "0xadb3952a07B2c9fA7dbd2F583cd2F0412C97eC33",
+  "address": "0x1599155BF43e67B032E49D86600078b1A050D94f",
   "abi": [
     {
       "anonymous": false,
@@ -24,16 +24,16 @@
       "inputs": [
         {
           "internalType": "bytes",
-          "name": "signedEK",
+          "name": "publicKey",
           "type": "bytes"
         },
         {
           "internalType": "bytes",
-          "name": "signature",
+          "name": "signedEK",
           "type": "bytes"
         }
       ],
-      "name": "OnboardAccount",
+      "name": "onboardAccount",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
