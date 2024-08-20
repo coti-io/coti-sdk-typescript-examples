@@ -79,9 +79,9 @@ async function confidentialTransfer(
 
     const func = token["transfer(address,uint256,bytes,bool)"]
     const selector = func.fragment.selector
-    const {ctInt, signature} = await buildInputText(BigInt(transferAmount), owner, await token.getAddress(), selector)
+    const {ciphertext, signature} = await buildInputText(BigInt(transferAmount), owner, await token.getAddress(), selector)
 
-    await (await func(alice.address, ctInt, signature, false, {gasLimit})).wait()
+    await (await func(alice.address, ciphertext, signature, false, {gasLimit})).wait()
     return await assertBalance(token, initlalBalance - transferAmount, owner)
 }
 
@@ -129,8 +129,8 @@ async function confidentialApprove(
 
     const func = token["approve(address,uint256,bytes)"]
     const selector = func.fragment.selector
-    const {ctInt, signature} = await buildInputText(BigInt(approveAmount), owner, await token.getAddress(), selector)
-    await (await func(alice.address, ctInt, signature, {gasLimit})).wait()
+    const {ciphertext, signature} = await buildInputText(BigInt(approveAmount), owner, await token.getAddress(), selector)
+    await (await func(alice.address, ciphertext, signature, {gasLimit})).wait()
 
     await assertAllowance(token, approveAmount, owner, alice.address)
 }
@@ -161,8 +161,8 @@ async function confidentialTransferFrom(
 
     const func = token["transferFrom(address,address,uint256,bytes,bool)"]
     const selector = func.fragment.selector
-    let {ctInt, signature} = await buildInputText(BigInt(transferAmount), owner, await token.getAddress(), selector)
-    await (await func(owner.wallet.address, alice.address, ctInt, signature, false, {gasLimit})).wait()
+    let {ciphertext, signature} = await buildInputText(BigInt(transferAmount), owner, await token.getAddress(), selector)
+    await (await func(owner.wallet.address, alice.address, ciphertext, signature, false, {gasLimit})).wait()
 
     return await assertBalance(token, initlalBalance - transferAmount, owner)
 }
