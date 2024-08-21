@@ -5,14 +5,14 @@
   "private": true,
   "scripts": {
     "postinstall": "cd confidentiality-contracts && yarn && yarn build",
+    "build": "tsc",
     "erc20": "ts-node src/main.ts erc20",
     "dataOnChain": "ts-node src/main.ts dataOnChain",
     "nativeTransfer": "ts-node src/main.ts nativeTransfer"
   },
   "devDependencies": {
-    "@coti-io/coti-sdk-typescript": "0.6.3",
+    "@coti-io/coti-ethers": "https://github.com/coti-io/coti-ethers.git#8401631578620eb2cd707cc1c3ba39b0cd27ab18",
     "dotenv": "^16.4.5",
-    "ethers": "^6.12.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   }

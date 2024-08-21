@@ -1,16 +1,13 @@
-import {Provider, Wallet} from "ethers";
-import {getNativeBalance, transferNative} from "@coti-io/coti-sdk-typescript";
-import {getWallet} from "../util/general-utils";
+import {getNativeBalance, initEtherProvider, transferNative, Wallet} from "@coti-io/coti-ethers";
 
-export async function nativeTransfer(provider: Provider) {
-    const wallet = getWallet(provider)
-    const otherWallet = new Wallet(Wallet.createRandom(provider).privateKey)
+export async function nativeTransfer(wallet: Wallet) {
+    const otherWallet = new Wallet()
     const transferAmount = BigInt(1000000000000000000)
     const gasUnit = 21000
-
-    console.log(await getNativeBalance(provider, wallet.address))
+    const defaultProvider = wallet.provider || initEtherProvider()
+    console.log(await getNativeBalance(defaultProvider, wallet.address))
     try {
-        const response = await transferNative(provider, wallet, otherWallet.address, transferAmount, gasUnit)
+        const response = await transferNative(defaultProvider, wallet, otherWallet.address, transferAmount, gasUnit)
         console.log(response)
     } catch (e) {
         console.error(e)
