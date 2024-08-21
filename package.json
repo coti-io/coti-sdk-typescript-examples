@@ -10,7 +10,7 @@
     "nativeTransfer": "ts-node src/main.ts nativeTransfer"
   },
   "devDependencies": {
-    "@coti-io/coti-sdk-typescript": "0.6.3",
+    "@coti-io/coti-sdk-typescript": "https://github.com/coti-io/coti-sdk-typescript.git#db9f6194b3ef2d21aea486e53ebe18945ae6a39c",
     "dotenv": "^16.4.5",
     "ethers": "^6.12.1",
     "ts-node": "^10.9.2",
