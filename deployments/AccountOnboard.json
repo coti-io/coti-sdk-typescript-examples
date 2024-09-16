@@ -1,5 +1,5 @@
 {
-  "address": "0xadb3952a07B2c9fA7dbd2F583cd2F0412C97eC33",
+  "address": "0x60eA13A5f263f77f7a2832cfEeF1729B1688477c",
   "abi": [
     {
       "anonymous": false,
@@ -13,7 +13,13 @@
         {
           "indexed": false,
           "internalType": "bytes",
-          "name": "userKey",
+          "name": "userKey1",
+          "type": "bytes"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes",
+          "name": "userKey2",
           "type": "bytes"
         }
       ],
@@ -24,16 +30,16 @@
       "inputs": [
         {
           "internalType": "bytes",
-          "name": "signedEK",
+          "name": "publicKey",
           "type": "bytes"
         },
         {
           "internalType": "bytes",
-          "name": "signature",
+          "name": "signedEK",
           "type": "bytes"
         }
       ],
-      "name": "OnboardAccount",
+      "name": "onboardAccount",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
