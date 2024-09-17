@@ -16,7 +16,7 @@ dotenv.config()
 
 async function main() {
     loadDeployments()
-    const provider = initEtherProvider();
+    const provider = initEtherProvider("https://testnet.coti.io/rpc");
     if (!await isProviderConnected(provider))
         throw Error('provider not connected')
     await printNetworkDetails(provider)
