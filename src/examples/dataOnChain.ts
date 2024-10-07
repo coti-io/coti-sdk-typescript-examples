@@ -83,11 +83,11 @@ async function setValueWithEncryptedInput(
     console.log(`setting network encrypted value using user encrypted value: ${value}`)
     const func = contract.setSomeEncryptedValueEncryptedInput
     const {
-        ctInt,
+        ciphertext,
         signature
     } = user.encryptUint(value.valueOf(), await contract.getAddress(), func.fragment.selector)
 
-    await (await func(ctInt, signature, {gasLimit})).wait()
+    await (await func(ciphertext, signature, {gasLimit})).wait()
 
     await (await contract.setUserSomeEncryptedValueEncryptedInput({gasLimit})).wait()
 
