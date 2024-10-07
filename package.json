@@ -4,13 +4,14 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "postinstall": "cd confidentiality-contracts && yarn && yarn build",
     "erc20": "ts-node src/main.ts erc20",
     "dataOnChain": "ts-node src/main.ts dataOnChain",
-    "nativeTransfer": "ts-node src/main.ts nativeTransfer"
+    "nativeTransfer": "ts-node src/main.ts nativeTransfer",
+    "onChainDatabase": "ts-node src/main.ts onChainDatabase"
   },
   "devDependencies": {
-    "@coti-io/coti-sdk-typescript": "0.6.3",
+    "@coti-io/coti-sdk-typescript": "git+https://github.com/coti-io/coti-sdk-typescript.git#0183765d6fb79ac42dfa0e3370bc2604d551f6dd",
+    "coti-contracts-examples": "git+https://github.com/coti-io/coti-contracts-examples.git#c972b93f7d882121afcb499aa52e20e60f85b277",
     "dotenv": "^16.4.5",
     "ethers": "^6.12.1",
     "ts-node": "^10.9.2",

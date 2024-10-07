@@ -1,3 +1,0 @@
-[submodule "confidentiality-contracts"]
-	path = confidentiality-contracts
-	url = https://github.com/coti-io/confidentiality-contracts.git

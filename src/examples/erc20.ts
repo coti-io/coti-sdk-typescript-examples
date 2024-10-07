@@ -1,168 +1,131 @@
+import * as fs from "fs"
+import * as path from "path"
+
 import {Provider, Wallet} from "ethers"
 import {buildInputText, type ConfidentialAccount, decryptUint} from "@coti-io/coti-sdk-typescript"
-import {getContract} from "../util/contracts"
+import {PrivateToken} from "coti-contracts-examples/typechain-types"
+import {deploy} from "../util/contracts"
 import {assert} from "../util/assert"
 
-const gasLimit = 12000000
+const GAS_LIMIT = 12000000
 
-async function assertBalance(token: ReturnType<typeof getTokenContract>, amount: number, user: ConfidentialAccount) {
-    const ctBalance = await token.balanceOf()
-    let balance = Number(decryptUint(ctBalance, user.userKey))
+async function assertBalance(token: PrivateToken, amount: bigint, user: ConfidentialAccount) {
+    const ctBalance = await token["balanceOf(address)"](user.wallet.address)
+    let balance = decryptUint(ctBalance, user.userKey)
     assert(balance === amount, `Expected balance to be ${amount}, but got ${balance}`)
     return balance
 }
 
 async function assertAllowance(
-    token: ReturnType<typeof getTokenContract>,
-    amount: number,
+    token: PrivateToken,
+    amount: bigint,
     owner: ConfidentialAccount,
     spenderAddress: string
 ) {
-    const ctAllowance = await token.allowance(owner.wallet.address, spenderAddress)
-    let allowance = Number(decryptUint(ctAllowance, owner.userKey))
+    const ctAllowance = (await token["allowance(address,address)"](owner.wallet.address, spenderAddress))[1]
+    let allowance = decryptUint(ctAllowance, owner.userKey)
     assert(allowance === amount, `Expected allowance to be ${amount}, but got ${allowance}`)
 }
 
-function getTokenContract(user: ConfidentialAccount) {
-    return getContract("ERC20Example", user.wallet)
+async function getTokenContract(user: ConfidentialAccount) {
+    const privateTokenFilePath = path.join(
+        "node_modules",
+        "coti-contracts-examples",
+        "artifacts",
+        "contracts",
+        "PrivateToken.sol",
+        "PrivateToken.json"
+    )
+
+    const privateTokenArtifacts: any = JSON.parse(fs.readFileSync(privateTokenFilePath, "utf8"))
+
+    const contract = await deploy(
+        privateTokenArtifacts["abi"],
+        privateTokenArtifacts["bytecode"],
+        user.wallet,
+        ["My Private Token", "PTOK"]
+    )
+
+    return contract
 }
 
 export async function erc20Example(provider: Provider, user: ConfidentialAccount) {
-    const token = getTokenContract(user)
+    const token: PrivateToken = await getTokenContract(user)
+
+    await (
+        await token
+            .mint(user.wallet.address, 5000n, { gasLimit: GAS_LIMIT })
+    ).wait()
+
+    let balance = await assertBalance(token, 5000n, user)
+
     const otherWallet = new Wallet(Wallet.createRandom(provider).privateKey)
 
-    const transferAmount = 5
+    const transferAmount = 5n
 
-    let balance = Number(decryptUint(await token.balanceOf(), user.userKey))
-    if (balance === 0) {
-        await (await token.setBalance(100000000, {gasLimit})).wait()
-        balance = await assertBalance(token, 100000000, user)
-    }
-    balance = await clearTransfer(token, balance, user, otherWallet, transferAmount)
-    balance = await confidentialTransfer(token, balance, user, otherWallet, transferAmount)
+    balance = await transfer(token, balance, user, otherWallet, transferAmount)
 
-    await clearTransferFromWithoutAllowance(token, balance, user, otherWallet, transferAmount)
-    await clearApprove(token, user, otherWallet, transferAmount * 10)
-    balance = await clearTransferFrom(token, balance, user, otherWallet, transferAmount)
+    await approve(token, user, otherWallet, transferAmount * 10n)
 
-    balance = await confidentialTransferFrom(token, balance, user, otherWallet, transferAmount)
+    balance = await transferFrom(token, balance, user, otherWallet, transferAmount)
 
-    await confidentialApprove(token, user, otherWallet, transferAmount * 10)
 }
 
-async function clearTransfer(
-    token: ReturnType<typeof getTokenContract>,
-    initlalBalance: number,
+async function transfer(
+    token: PrivateToken,
+    initlalBalance: bigint,
     owner: ConfidentialAccount,
     alice: Wallet,
-    transferAmount: number
+    transferAmount: bigint
 ) {
-    console.log("************* Transfer clear ", transferAmount, " from my account to Alice *************")
+    console.log("************* Private transfer ", transferAmount, " from my account to Alice *************")
 
-    await (await token["transfer(address,uint64,bool)"](alice.address, transferAmount, true, {gasLimit})).wait()
+    const itAmount = await buildInputText(transferAmount, owner, await token.getAddress(), token["transfer(address,(uint256,bytes))"].fragment.selector)
 
-    await assertBalance(token, initlalBalance - transferAmount, owner)
-
-    await (await token["transfer(address,uint64,bool)"](alice.address, transferAmount, true, {gasLimit})).wait()
-
-    return await assertBalance(token, initlalBalance - 2 * transferAmount, owner)
-}
-
-async function confidentialTransfer(
-    token: ReturnType<typeof getTokenContract>,
-    initlalBalance: number,
-    owner: ConfidentialAccount,
-    alice: Wallet,
-    transferAmount: number
-) {
-    console.log("************* Transfer confidential ", transferAmount, " from my account to Alice *************")
-
-    const func = token["transfer(address,uint256,bytes,bool)"]
-    const selector = func.fragment.selector
-    const {ctInt, signature} = await buildInputText(BigInt(transferAmount), owner, await token.getAddress(), selector)
-
-    await (await func(alice.address, ctInt, signature, false, {gasLimit})).wait()
-    return await assertBalance(token, initlalBalance - transferAmount, owner)
-}
-
-async function clearTransferFromWithoutAllowance(
-    token: ReturnType<typeof getTokenContract>,
-    initlalBalance: number,
-    owner: ConfidentialAccount,
-    alice: Wallet,
-    transferAmount: number
-) {
-    console.log(
-        "************* TransferFrom clear ",
-        transferAmount,
-        " from my account to Alice (without allowance) *************"
-    )
-
-    await (await token.approveClear(alice.address, 0, {gasLimit})).wait()
-
-    const func = token["transferFrom(address,address,uint64,bool)"]
-    await (await func(owner.wallet.address, alice.address, transferAmount, true, {gasLimit})).wait()
-
-    return await assertBalance(token, initlalBalance, owner)
-}
-
-async function clearApprove(
-    token: ReturnType<typeof getTokenContract>,
-    owner: ConfidentialAccount,
-    alice: Wallet,
-    approveAmount: number
-) {
-    console.log("************* Approve clear ", approveAmount, " to Alice address *************")
-    await (await token.approveClear(alice.address, approveAmount, {gasLimit})).wait()
-    await assertAllowance(token, approveAmount, owner, alice.address)
-}
-
-async function confidentialApprove(
-    token: ReturnType<typeof getTokenContract>,
-    owner: ConfidentialAccount,
-    alice: Wallet,
-    approveAmount: number
-) {
-    console.log("************* Approve confidential ", approveAmount, " to Alice address *************")
-    await (await token.approveClear(alice.address, 0, {gasLimit})).wait()
-    await assertAllowance(token, 0, owner, alice.address)
-
-    const func = token["approve(address,uint256,bytes)"]
-    const selector = func.fragment.selector
-    const {ctInt, signature} = await buildInputText(BigInt(approveAmount), owner, await token.getAddress(), selector)
-    await (await func(alice.address, ctInt, signature, {gasLimit})).wait()
-
-    await assertAllowance(token, approveAmount, owner, alice.address)
-}
-
-async function clearTransferFrom(
-    token: ReturnType<typeof getTokenContract>,
-    initlalBalance: number,
-    owner: ConfidentialAccount,
-    alice: Wallet,
-    transferAmount: number
-) {
-    console.log("************* TransferFrom clear ", transferAmount, " from my account to Alice *************")
-
-    const func = token["transferFrom(address,address,uint64,bool)"]
-    await (await func(owner.wallet.address, alice.address, transferAmount, true, {gasLimit})).wait()
+    await (
+        await token
+            ["transfer(address,(uint256,bytes))"]
+            (alice.address, itAmount, { gasLimit: GAS_LIMIT })
+    ).wait()
 
     return await assertBalance(token, initlalBalance - transferAmount, owner)
 }
 
-async function confidentialTransferFrom(
-    token: ReturnType<typeof getTokenContract>,
-    initlalBalance: number,
+async function approve(
+    token: PrivateToken,
     owner: ConfidentialAccount,
     alice: Wallet,
-    transferAmount: number
+    approveAmount: bigint
 ) {
-    console.log("************* TransferFrom confidential ", transferAmount, " from my account to Alice *************")
+    console.log("************* Private approve", approveAmount, " to Alice address *************")
 
-    const func = token["transferFrom(address,address,uint256,bytes,bool)"]
-    const selector = func.fragment.selector
-    let {ctInt, signature} = await buildInputText(BigInt(transferAmount), owner, await token.getAddress(), selector)
-    await (await func(owner.wallet.address, alice.address, ctInt, signature, false, {gasLimit})).wait()
+    const itAmount = buildInputText(approveAmount, owner, await token.getAddress(), token["approve(address,(uint256,bytes))"].fragment.selector)
+
+    await (
+        await token
+            ["approve(address,(uint256,bytes))"]
+            (alice.address, itAmount, { gasLimit: GAS_LIMIT })
+    ).wait()
+
+    await assertAllowance(token, approveAmount, owner, alice.address)
+}
+
+async function transferFrom(
+    token: PrivateToken,
+    initlalBalance: bigint,
+    owner: ConfidentialAccount,
+    alice: Wallet,
+    transferAmount: bigint
+) {
+    console.log("************* Private transferFrom ", transferAmount, " from my account to Alice *************")
+
+    const itAmount = await buildInputText(BigInt(transferAmount), owner, await token.getAddress(), token["transferFrom(address,address,(uint256,bytes))"].fragment.selector)
+    
+    await (
+        await token
+            ["transferFrom(address,address,(uint256,bytes))"]
+            (owner.wallet.address, alice.address, itAmount, { gasLimit: GAS_LIMIT })
+    ).wait()
 
     return await assertBalance(token, initlalBalance - transferAmount, owner)
 }

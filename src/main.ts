@@ -1,8 +1,6 @@
 import dotenv from "dotenv"
 import {setupAccount} from "./util/onboard"
 import {erc20Example} from "./examples/erc20"
-import {loadDeployments} from "./util/contracts"
-import {dataOnChainExample} from "./examples/dataOnChain"
 import {
     initEtherProvider,
     isProviderConnected,
@@ -11,11 +9,12 @@ import {
     validateAddress
 } from "@coti-io/coti-sdk-typescript/dist/ethers_utils";
 import {nativeTransfer} from "./examples/nativeTransfer";
+import { dataOnChainExample } from "./examples/dataOnChain";
+import { onChainDatabaseExample } from "./examples/onChainDatabase";
 
 dotenv.config()
 
 async function main() {
-    loadDeployments()
     const provider = initEtherProvider();
     if (!await isProviderConnected(provider))
         throw Error('provider not connected')
@@ -38,6 +37,9 @@ async function main() {
     } else if (process.argv[2] === "nativeTransfer") {
         console.log("Running nativeTransfer example...")
         await nativeTransfer(provider)
+    } else if (process.argv[2] === "onChainDatabase") {
+        console.log("Running onChainDatabase example...")
+        await onChainDatabaseExample(provider, owner)
     } else {
         console.log("No example specified.")
     }
