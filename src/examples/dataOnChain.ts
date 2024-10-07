@@ -59,8 +59,7 @@ async function testUserEncryptedString(contract: ReturnType<typeof getDataOnChai
     const testString = 'test string'
     const func = contract.setSomeEncryptedStringEncryptedInput
     const encryptedString = await buildStringInputText(testString, user, await contract.getAddress(), func.fragment.selector)
-    let response = await (await contract.setSomeEncryptedStringEncryptedInput(encryptedString.map((val) => val.ciphertext),
-        encryptedString.map((val) => val.signature), {gasLimit})).wait()
+    let response = await (await contract.setSomeEncryptedStringEncryptedInput(encryptedString, {gasLimit})).wait()
     if (!validateTxStatus(response)) {
         throw Error("tx setSomeEncryptedStringEncryptedInput failed")
     }
