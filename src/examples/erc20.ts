@@ -1,13 +1,12 @@
-import {Provider, Wallet} from "ethers"
-import {buildInputText, type ConfidentialAccount, decryptUint} from "@coti-io/coti-sdk-typescript"
+import {itUint, Provider, Wallet} from "@coti-io/coti-ethers"
 import {getContract} from "../util/contracts"
 import {assert} from "../util/assert"
 
 const gasLimit = 12000000
 
-async function assertBalance(token: ReturnType<typeof getTokenContract>, amount: number, user: ConfidentialAccount) {
+async function assertBalance(token: ReturnType<typeof getTokenContract>, amount: number, user: Wallet) {
     const ctBalance = await token.balanceOf()
-    let balance = Number(decryptUint(ctBalance, user.userKey))
+    let balance = Number(await user.decryptValue(ctBalance))
     assert(balance === amount, `Expected balance to be ${amount}, but got ${balance}`)
     return balance
 }
@@ -15,25 +14,25 @@ async function assertBalance(token: ReturnType<typeof getTokenContract>, amount:
 async function assertAllowance(
     token: ReturnType<typeof getTokenContract>,
     amount: number,
-    owner: ConfidentialAccount,
+    owner: Wallet,
     spenderAddress: string
 ) {
-    const ctAllowance = await token.allowance(owner.wallet.address, spenderAddress)
-    let allowance = Number(decryptUint(ctAllowance, owner.userKey))
+    const ctAllowance = await token.allowance(owner.address, spenderAddress)
+    let allowance = Number(await owner.decryptValue(ctAllowance))
     assert(allowance === amount, `Expected allowance to be ${amount}, but got ${allowance}`)
 }
 
-function getTokenContract(user: ConfidentialAccount) {
-    return getContract("ERC20Example", user.wallet)
+function getTokenContract(user: Wallet) {
+    return getContract("ERC20Example", user)
 }
 
-export async function erc20Example(provider: Provider, user: ConfidentialAccount) {
+export async function erc20Example(provider: Provider, user: Wallet) {
     const token = getTokenContract(user)
     const otherWallet = new Wallet(Wallet.createRandom(provider).privateKey)
 
     const transferAmount = 5
 
-    let balance = Number(decryptUint(await token.balanceOf(), user.userKey))
+    let balance = Number(await user.decryptValue(await token.balanceOf()))
     if (balance === 0) {
         await (await token.setBalance(100000000, {gasLimit})).wait()
         balance = await assertBalance(token, 100000000, user)
@@ -53,7 +52,7 @@ export async function erc20Example(provider: Provider, user: ConfidentialAccount
 async function clearTransfer(
     token: ReturnType<typeof getTokenContract>,
     initlalBalance: number,
-    owner: ConfidentialAccount,
+    owner: Wallet,
     alice: Wallet,
     transferAmount: number
 ) {
@@ -71,7 +70,7 @@ async function clearTransfer(
 async function confidentialTransfer(
     token: ReturnType<typeof getTokenContract>,
     initlalBalance: number,
-    owner: ConfidentialAccount,
+    owner: Wallet,
     alice: Wallet,
     transferAmount: number
 ) {
@@ -79,7 +78,7 @@ async function confidentialTransfer(
 
     const func = token["transfer(address,uint256,bytes,bool)"]
     const selector = func.fragment.selector
-    const {ciphertext, signature} = await buildInputText(BigInt(transferAmount), owner, await token.getAddress(), selector)
+    const {ciphertext, signature} = await owner.encryptValue(BigInt(transferAmount), await token.getAddress(), selector) as itUint
 
     await (await func(alice.address, ciphertext, signature, false, {gasLimit})).wait()
     return await assertBalance(token, initlalBalance - transferAmount, owner)
@@ -88,7 +87,7 @@ async function confidentialTransfer(
 async function clearTransferFromWithoutAllowance(
     token: ReturnType<typeof getTokenContract>,
     initlalBalance: number,
-    owner: ConfidentialAccount,
+    owner: Wallet,
     alice: Wallet,
     transferAmount: number
 ) {
@@ -101,14 +100,14 @@ async function clearTransferFromWithoutAllowance(
     await (await token.approveClear(alice.address, 0, {gasLimit})).wait()
 
     const func = token["transferFrom(address,address,uint64,bool)"]
-    await (await func(owner.wallet.address, alice.address, transferAmount, true, {gasLimit})).wait()
+    await (await func(owner.address, alice.address, transferAmount, true, {gasLimit})).wait()
 
     return await assertBalance(token, initlalBalance, owner)
 }
 
 async function clearApprove(
     token: ReturnType<typeof getTokenContract>,
-    owner: ConfidentialAccount,
+    owner: Wallet,
     alice: Wallet,
     approveAmount: number
 ) {
@@ -119,7 +118,7 @@ async function clearApprove(
 
 async function confidentialApprove(
     token: ReturnType<typeof getTokenContract>,
-    owner: ConfidentialAccount,
+    owner: Wallet,
     alice: Wallet,
     approveAmount: number
 ) {
@@ -129,7 +128,7 @@ async function confidentialApprove(
 
     const func = token["approve(address,uint256,bytes)"]
     const selector = func.fragment.selector
-    const {ciphertext, signature} = await buildInputText(BigInt(approveAmount), owner, await token.getAddress(), selector)
+    const {ciphertext, signature} = await await owner.encryptValue(BigInt(approveAmount), await token.getAddress(), selector) as itUint
     await (await func(alice.address, ciphertext, signature, {gasLimit})).wait()
 
     await assertAllowance(token, approveAmount, owner, alice.address)
@@ -138,14 +137,14 @@ async function confidentialApprove(
 async function clearTransferFrom(
     token: ReturnType<typeof getTokenContract>,
     initlalBalance: number,
-    owner: ConfidentialAccount,
+    owner: Wallet,
     alice: Wallet,
     transferAmount: number
 ) {
     console.log("************* TransferFrom clear ", transferAmount, " from my account to Alice *************")
 
     const func = token["transferFrom(address,address,uint64,bool)"]
-    await (await func(owner.wallet.address, alice.address, transferAmount, true, {gasLimit})).wait()
+    await (await func(owner.address, alice.address, transferAmount, true, {gasLimit})).wait()
 
     return await assertBalance(token, initlalBalance - transferAmount, owner)
 }
@@ -153,7 +152,7 @@ async function clearTransferFrom(
 async function confidentialTransferFrom(
     token: ReturnType<typeof getTokenContract>,
     initlalBalance: number,
-    owner: ConfidentialAccount,
+    owner: Wallet,
     alice: Wallet,
     transferAmount: number
 ) {
@@ -161,8 +160,8 @@ async function confidentialTransferFrom(
 
     const func = token["transferFrom(address,address,uint256,bytes,bool)"]
     const selector = func.fragment.selector
-    let {ciphertext, signature} = await buildInputText(BigInt(transferAmount), owner, await token.getAddress(), selector)
-    await (await func(owner.wallet.address, alice.address, ciphertext, signature, false, {gasLimit})).wait()
+    let {ciphertext, signature} = await owner.encryptValue(BigInt(transferAmount), await token.getAddress(), selector) as itUint
+    await (await func(owner.address, alice.address, ciphertext, signature, false, {gasLimit})).wait()
 
     return await assertBalance(token, initlalBalance - transferAmount, owner)
 }

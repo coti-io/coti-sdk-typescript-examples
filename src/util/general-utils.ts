@@ -1,4 +1,4 @@
-import {ContractTransactionReceipt, Provider, Wallet} from "ethers";
+import {Provider, Wallet} from "@coti-io/coti-ethers";
 import fs from "fs";
 
 export function getWallet(provider: Provider) {

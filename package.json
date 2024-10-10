@@ -10,9 +10,8 @@
     "nativeTransfer": "ts-node src/main.ts nativeTransfer"
   },
   "devDependencies": {
-    "@coti-io/coti-sdk-typescript": "0.6.4",
+    "@coti-io/coti-ethers": "0.1.1-b",
     "dotenv": "^16.4.5",
-    "ethers": "^6.12.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   }

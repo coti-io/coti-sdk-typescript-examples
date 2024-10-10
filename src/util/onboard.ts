@@ -1,5 +1,4 @@
-import {ConfidentialAccount, getAccountBalance} from "@coti-io/coti-sdk-typescript/"
-import { Wallet, Provider } from "ethers"
+import { getAccountBalance, Provider, Wallet } from "@coti-io/coti-ethers"
 import {getWallet, setEnvValue} from "./general-utils";
 
 export async function setupAccount(provider: Provider) {
@@ -10,15 +9,15 @@ export async function setupAccount(provider: Provider) {
 
   const toAccount = async (wallet: Wallet, userKey: string | undefined) => {
     if (userKey) {
-      return new ConfidentialAccount(wallet, userKey)
+      return wallet
     }
 
     console.log("************* Onboarding user ", wallet.address, " *************")
-    const account = await ConfidentialAccount.onboard(wallet)
+    await wallet.generateOrRecoverAes()
     console.log("************* Onboarded! created user key and saved into .env file *************")
 
-    setEnvValue("USER_KEY", account.userKey)
-    return account
+    setEnvValue("USER_KEY", wallet.getUserOnboardInfo()?.aesKey!)
+    return wallet
   }
 
   return toAccount(wallet, process.env.USER_KEY)
