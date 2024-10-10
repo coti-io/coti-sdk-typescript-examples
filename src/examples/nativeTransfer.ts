@@ -1,5 +1,4 @@
-import {Provider, Wallet} from "ethers";
-import {getNativeBalance, transferNative} from "@coti-io/coti-sdk-typescript";
+import {getNativeBalance, Provider, transferNative, Wallet} from "@coti-io/coti-ethers";
 import {getWallet} from "../util/general-utils";
 
 export async function nativeTransfer(provider: Provider) {

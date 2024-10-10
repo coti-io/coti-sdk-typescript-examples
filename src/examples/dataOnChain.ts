@@ -1,22 +1,15 @@
-import {Provider} from "ethers"
-import {
-    buildStringInputText,
-    type ConfidentialAccount,
-    decryptString,
-    decryptUint,
-    generateAesKey
-} from "@coti-io/coti-sdk-typescript"
+import { itString, itUint, Provider, Wallet } from "@coti-io/coti-ethers"
 import {getContract} from "../util/contracts"
 import {assert} from "../util/assert"
 import {validateTxStatus} from "../util/general-utils";
 
 const gasLimit = 12000000
 
-function getDataOnChainContract(user: ConfidentialAccount) {
-    return getContract("DataOnChain", user.wallet)
+function getDataOnChainContract(user: Wallet) {
+    return getContract("DataOnChain", user)
 }
 
-export async function dataOnChainExample(provider: Provider, user: ConfidentialAccount) {
+export async function dataOnChainExample(provider: Provider, user: Wallet) {
     const contract = getDataOnChainContract(user)
     const value = BigInt(100)
     console.log(`setting network encrypted value: ${value}`)
@@ -24,17 +17,14 @@ export async function dataOnChainExample(provider: Provider, user: ConfidentialA
 
     const networkEncryptedValue = await contract.getNetworkSomeEncryptedValue()
     console.log(`Network encrypted value: ${networkEncryptedValue}`)
-    console.log(`Network decrypted value: ${user.decryptUint(networkEncryptedValue)}`)
+    console.log(`Network decrypted value: ${await user.decryptValue(networkEncryptedValue)}`)
 
     await (await contract.setUserSomeEncryptedValue({gasLimit})).wait()
     console.log(`setting user encrypted value: ${value}`)
 
     const userEncryptedValue = await contract.getUserSomeEncryptedValue()
     console.log(`User encrypted value: ${userEncryptedValue}`)
-    console.log(`User decrypted value: ${user.decryptUint(userEncryptedValue)}`)
-
-    const otherUserKey = generateAesKey()
-    console.log(`Other User decrypted value: ${decryptUint(userEncryptedValue, otherUserKey)}`)
+    console.log(`User decrypted value: ${await user.decryptValue(userEncryptedValue)}`)
 
     const value2 = BigInt(555)
     await setValueWithEncryptedInput(contract, user, value2)
@@ -42,7 +32,7 @@ export async function dataOnChainExample(provider: Provider, user: ConfidentialA
     await (await contract.add({gasLimit})).wait()
 
     const encryptedResult = await contract.getUserArithmeticResult()
-    const decryptedResult = user.decryptUint(encryptedResult)
+    const decryptedResult = await user.decryptValue(encryptedResult)
     const expectedResult = value + value2
     assert(
         decryptedResult === expectedResult,
@@ -55,10 +45,10 @@ export async function dataOnChainExample(provider: Provider, user: ConfidentialA
 }
 
 async function testUserEncryptedString(contract: ReturnType<typeof getDataOnChainContract>,
-                                       user: ConfidentialAccount) {
+                                       user: Wallet) {
     const testString = 'test string'
     const func = contract.setSomeEncryptedStringEncryptedInput
-    const encryptedString = await buildStringInputText(testString, user, await contract.getAddress(), func.fragment.selector)
+    const encryptedString = await user.encryptValue(testString, await contract.getAddress(), func.fragment.selector) as itString
     let response = await (await contract.setSomeEncryptedStringEncryptedInput(encryptedString, {gasLimit})).wait()
     if (!validateTxStatus(response)) {
         throw Error("tx setSomeEncryptedStringEncryptedInput failed")
@@ -68,7 +58,7 @@ async function testUserEncryptedString(contract: ReturnType<typeof getDataOnChai
         throw Error("tx to setUserSomeEncryptedStringEncryptedInput failed")
     }
     const userEncyData = await contract.getUserSomeEncryptedStringEncryptedInput()
-    const decryptedUserString: string = decryptString(userEncyData, user.userKey)
+    const decryptedUserString = await user.decryptValue(userEncyData)
     assert(testString === decryptedUserString,
         `Expected test result to be ${testString}, but got ${decryptedUserString}`
     )
@@ -77,7 +67,7 @@ async function testUserEncryptedString(contract: ReturnType<typeof getDataOnChai
 
 async function setValueWithEncryptedInput(
     contract: ReturnType<typeof getDataOnChainContract>,
-    user: ConfidentialAccount,
+    user: Wallet,
     value: bigint
 ) {
     console.log(`setting network encrypted value using user encrypted value: ${value}`)
@@ -85,14 +75,14 @@ async function setValueWithEncryptedInput(
     const {
         ciphertext,
         signature
-    } = user.encryptUint(value.valueOf(), await contract.getAddress(), func.fragment.selector)
+    } = await user.encryptValue(value.valueOf(), await contract.getAddress(), func.fragment.selector) as itUint
 
     await (await func(ciphertext, signature, {gasLimit})).wait()
 
     await (await contract.setUserSomeEncryptedValueEncryptedInput({gasLimit})).wait()
 
     const userEncryptedValue = await contract.getUserSomeEncryptedValueEncryptedInput()
-    const decryptedValue = user.decryptUint(userEncryptedValue)
+    const decryptedValue = await user.decryptValue(userEncryptedValue)
     assert(decryptedValue === value, `Expected value to be ${value}, but got ${decryptedValue}`)
     console.log(`User decrypted using user encrypted value: ${decryptedValue}`)
 }

@@ -4,27 +4,28 @@ import {erc20Example} from "./examples/erc20"
 import {loadDeployments} from "./util/contracts"
 import {dataOnChainExample} from "./examples/dataOnChain"
 import {
-    initEtherProvider,
+    CotiNetwork,
+    getDefaultProvider,
     isProviderConnected,
     printAccountDetails,
     printNetworkDetails,
     validateAddress
-} from "@coti-io/coti-sdk-typescript/dist/ethers_utils";
+} from "@coti-io/coti-ethers";
 import {nativeTransfer} from "./examples/nativeTransfer";
 
 dotenv.config()
 
 async function main() {
     loadDeployments()
-    const provider = initEtherProvider("https://testnet.coti.io/rpc");
+    const provider = getDefaultProvider(CotiNetwork.Testnet);
     if (!await isProviderConnected(provider))
         throw Error('provider not connected')
     await printNetworkDetails(provider)
 
     const owner = await setupAccount(provider)
-    await printAccountDetails(provider, owner.wallet.address)
+    await printAccountDetails(provider, owner.address)
 
-    const validAddress = await validateAddress(owner.wallet.address)
+    const validAddress = await validateAddress(owner.address)
     if (!validAddress.valid) {
         throw Error('Invalid address')
     }
