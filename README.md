@@ -1,3 +1,6 @@
+> [!WARNING]
+> This repository has been deprecated and moved to [coti-typescript-examples](https://github.com/coti-io/coti-typescript-examples)
+
 # COTI V2 Confidentiality Preserving L2 | SDKs and Examples
 
 > [!NOTE]
